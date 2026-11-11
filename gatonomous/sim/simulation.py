@@ -1,0 +1,99 @@
+#simulationzz, convert dari cpp
+import sys
+
+import glfw
+import mujoco
+import numpy as np
+
+from simfiles import sim_state as S
+from simfiles import callbacks as cb
+from simfiles.controls import play_pose, pose_list
+from simfiles.poses import initialize_poses
+
+MODEL_PATH = "/home/kalelgms/Desktop/Projects/final_project/gatonomous/models/ARM.xml"
+
+
+def main():
+    model_path = sys.argv[1] if len(sys.argv) > 1 else MODEL_PATH
+
+    try:
+        S.m = mujoco.MjModel.from_xml_path(model_path)
+    except Exception as e:
+        print(f"Couldn't load model: {e}", file=sys.stderr)
+        return 1
+    S.d = mujoco.MjData(S.m)
+
+    # error
+    glfw.set_error_callback(cb.glfw_error_callback)
+    if not glfw.init():
+        print("glfwInit() gagal", file=sys.stderr)
+        return 1
+
+    # window
+    window = glfw.create_window(900, 1200, "arm sim", None, None)
+    if not window:
+        print("glfwCreateWindow() gagal", file=sys.stderr)
+        glfw.terminate()
+        return 1
+    glfw.make_context_current(window)
+    glfw.swap_interval(1)
+
+    # callbacks
+    glfw.set_mouse_button_callback(window, cb.mouse_button_callback)
+    glfw.set_cursor_pos_callback(window, cb.cursor_pos_callback)
+    glfw.set_scroll_callback(window, cb.scroll_callback)
+    glfw.set_key_callback(window, cb.keyboard_callback)
+
+    # scene setup
+    S.opt = mujoco.MjvOption()
+    S.scn = mujoco.MjvScene(S.m, maxgeom=2000)
+    S.con = mujoco.MjrContext(S.m, mujoco.mjtFontScale.mjFONTSCALE_100)
+
+    # cam setup
+    S.cam = mujoco.MjvCamera()
+    S.cam.lookat[2] = 0.15  # cam origin up a bit
+    S.cam.orthographic = 1
+    S.cam.distance = 1.5
+    S.cam.azimuth = 45
+    S.cam.elevation = -25
+
+    # create poses
+    initialize_poses()
+
+    # starting pose
+    play_pose(pose_list[0])  # index 0 = start pos
+
+    tip_id = mujoco.mj_name2id(S.m, mujoco.mjtObj.mjOBJ_SITE, "endeff")
+
+    # sim loop
+    while not glfw.window_should_close(window):
+        if cb.is_key_held():  # detect key holding
+            cb.key_held_update()
+
+        S.d.qfrc_applied[:] = S.d.qfrc_bias
+        mujoco.mj_step(S.m, S.d)
+
+        # IK: only leave InverseK once the tip has reached the target and settled
+        if S.STATE == S.BotState.INVERSE_K:
+            dist = np.linalg.norm(S.d.site_xpos[tip_id] - S.target_pos)
+            if dist < 0.01 and np.linalg.norm(S.d.qvel) < 0.05:
+                S.set_bot_state(S.BotState.TELEOP, "Reached Target!!")
+
+        w, h = glfw.get_framebuffer_size(window)
+        viewport = mujoco.MjrRect(0, 0, w, h)
+
+        mujoco.mjv_updateScene(S.m, S.d, S.opt, None, S.cam,
+                               mujoco.mjtCatBit.mjCAT_ALL.value, S.scn)
+        mujoco.mjr_render(viewport, S.scn, S.con)
+
+        glfw.swap_buffers(window)
+        glfw.poll_events()
+
+    # cleanup
+    S.con.free()
+    glfw.terminate()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
