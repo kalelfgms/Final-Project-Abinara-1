@@ -11,9 +11,9 @@ WRIST = 3
 ARM_ACTS = [0, 1, 2, 3]
 
 APPROACH = 0.06     # how far behind the target the claw stops before going in (m)
-LIFT = 0.04         # how high to lift a box before carrying it (m)
-SPEED = 0.08        # tip speed along a path (m/s of SIM time)
-TOL = 0.008         # "arrived" tolerance (m)
+LIFT = 0.08         # how high to lift a box before carrying it (m)
+SPEED = 1        # tip speed along a path (m/s of SIM time)
+TOL = 0.015         # "arrived" tolerance (m)
 MIN_TIP_Z = 0.03    # the claw tip is never commanded lower than this (m); raise it if the fingers still scrape
 
 PITCH_CANDIDATES = [0.0, -0.15, -0.3, -0.45, -0.6]   # claw elevation (rad); first one the joint limits allow is used

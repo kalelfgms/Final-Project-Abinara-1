@@ -1,0 +1,314 @@
+<mujoco model="ARM">
+  <!-- Converted from SolidWorks URDF (ARM.xml). Mesh files expected in ./meshes/ -->
+  <compiler angle="radian" meshdir="meshes/" balanceinertia="true" discardvisual="false"/>
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+
+  <default>
+    <geom contype="0" conaffinity="0"/>
+    <default class="visual"><geom type="mesh" group="1" contype="0" conaffinity="0"/></default>
+    <default class="collision"><geom type="mesh" group="3" contype="1" conaffinity="1" rgba="0.5 0.5 0.5 0.3"/></default>
+  </default>
+
+  <asset>
+    <mesh name="Base" file="Base.STL"/>
+    <mesh name="Link_1" file="Link_1.STL"/>
+    <mesh name="Link_2" file="Link_2.STL"/>
+    <mesh name="Link_3" file="Link_3.STL"/>
+    <mesh name="Link_4" file="Link_4.STL"/>
+    <mesh name="Link_5" file="Link_5.STL"/>
+    <mesh name="Gear_R" file="Gear_R.STL"/>
+    <mesh name="Gear_L" file="Gear_L.STL"/>
+    <mesh name="Conn_R" file="Conn_R.STL"/>
+    <mesh name="Conn_L" file="Conn_L.STL"/>
+    <mesh name="BOX" file="BOX.stl" scale="0.0005 0.0005 0.0005"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 1" dir="0 0 -1"/>
+    <geom name="floor" type="plane" size="1 1 0.025" rgba="0.9 0.9 0.9 1" contype="1" conaffinity="1"/>
+    <!-- xyz indicators -->
+    <!-- geom type="box" size="1.5 0.005 0.005" rgba="1 0 0 1" contype="0" conaffinity="0"/
+    geom type="box" size="0.005 1.5 0.005" rgba="0 1 0 1" contype="0" conaffinity="0"/
+    geom type="box" size="0.005 0.005 1.5" rgba="0 0 1 1" contype="0" conaffinity="0"/ -->
+    <!-- grab radius -->
+    <geom type="cylinder" size="0.35 0.0005" rgba="1 0 0 .2" contype="0" conaffinity="0"/>
+    <geom type="cylinder" size="0.14 0.005" rgba="0.9 0.9 0.9 1" contype="0" conaffinity="0"/>
+    <!-- <geom type="box" size="0.035 0.035 0.04" pos="0 0.2 0" rgba="0.9 0.9 0.9 1" contype="0" conaffinity="0"/> -->
+
+    <!-- target -->
+    <body name="target" mocap="true" pos="0.2 0.2 0.2">
+      <geom type="sphere" size="0.01" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+
+    <!-- PYRAMID -->
+    <body name="slot1" mocap="true" pos="-0.04 0.3 0.03">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="slot2" mocap="true" pos="-0.0 0.3 0.03">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="slot3" mocap="true" pos="0.04 0.3 0.03">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="slot4" mocap="true" pos="-0.02 0.3 0.07">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="slot5" mocap="true" pos="0.02 0.3 0.07">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="slot6" mocap="true" pos="0.0 0.3 0.11">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    
+    <!-- <body name="org1" pos="-0.04 0.3 0" euler="89.55 0 0">
+        <freejoint name="org1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="org2" pos="-0.0 0.3 0" euler="89.55 0 0">
+        <freejoint name="org2_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="org3" pos="0.04 0.3 0" euler="89.55 0 0">
+        <freejoint name="org3_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="grn1" pos="-0.02 0.3 0.04" euler="89.55 0 0">
+        <freejoint name="grn1_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="grn2" pos="0.02 0.3 0.04" euler="89.55 0 0">
+        <freejoint name="grn2_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="bge1" pos="0.0 0.3 0.08" euler="89.55 0 0">
+        <freejoint name="bge1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 1 0.9 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body> -->
+
+    <!-- BOXES -->
+    <body name="box1" mocap="true" pos="-0.2 -0.12 0.02">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="box2" mocap="true" pos="-0.25 0.05 0.02">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="box3" mocap="true" pos="-0.23 0.17 0.02">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="box4" mocap="true" pos="-0.28 -0.06 0.02">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="box5" mocap="true" pos="-0.15 -0.23 0.02">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+    <body name="box6" mocap="true" pos="-0.15 0.25 0.02">
+      <geom type="sphere" size="0.005" rgba="0 1 0 0.5" contype="0" conaffinity="0"/>
+    </body>
+
+    <!-- <body name="org1" pos="-0.2 -0.12 0.02" euler="89.55 35 0">
+        <freejoint name="org1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="org2" pos="-0.25 0.05 0.02" euler="89.55 25 0">
+        <freejoint name="org2_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="org3" pos="-0.23 0.17 0.02" euler="89.55 15 0">
+        <freejoint name="org3_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="grn1" pos="-0.28 -0.06 0.02" euler="89.55 5 0">
+        <freejoint name="grn1_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="grn2" pos="-0.15 -0.23 0.02" euler="89.55 45 0">
+        <freejoint name="grn2_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body>
+    <body name="bge1" pos="-0.15 0.25 0.02" euler="89.55 0 0">
+        <freejoint name="bge1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 1 0.9 1"/>
+        <geom class="collision" type="box" size="0.0175 0.02 0.0175" pos="0 0.02 0"/>
+    </body> -->
+    <!-- <body name="org1" pos="-0.2 -0.12 0.02" euler="89.55 35 0">
+        <freejoint name="org1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" mesh="BOX"/>
+    </body>
+    <body name="org2" pos="-0.25 0.05 0.02" euler="89.55 25 0">
+        <freejoint name="org2_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" mesh="BOX"/>
+    </body>
+    <body name="org3" pos="-0.23 0.17 0.02" euler="89.55 15 0">
+        <freejoint name="org3_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <geom class="collision" mesh="BOX"/>
+    </body>
+    <body name="grn1" pos="-0.28 -0.06 0.02" euler="89.55 5 0">
+        <freejoint name="grn1_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <geom class="collision" mesh="BOX"/>
+    </body>
+    <body name="grn2" pos="-0.15 -0.23 0.02" euler="89.55 45 0">
+        <freejoint name="grn2_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <geom class="collision" mesh="BOX"/>
+    </body>
+    <body name="bge1" pos="-0.15 0.25 0.02" euler="89.55 0 0">
+        <freejoint name="bge1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 1 0.9 1"/>
+        <geom class="collision" mesh="BOX"/>
+    </body> -->
+    <body name="org1" pos="-0.2 -0.12 0.02" euler="89.55 35 0">
+        <freejoint name="org1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <inertial pos="0 0.02 0" mass="0.03" diaginertia="7.828e-06 4.084e-06 7.828e-06"/>
+        <geom class="collision" type="box" pos="0 0.0025 0" size="0.0175 0.0025 0.0175"/>
+        <geom class="collision" type="box" pos="0 0.02 0"   size="0.01 0.015 0.01"/>
+        <geom class="collision" type="box" pos="0 0.0375 0" size="0.0175 0.0025 0.0175"/>
+    </body>
+    <body name="org2" pos="-0.25 0.05 0.02" euler="89.55 25 0">
+        <freejoint name="org2_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <inertial pos="0 0.02 0" mass="0.03" diaginertia="7.828e-06 4.084e-06 7.828e-06"/>
+        <geom class="collision" type="box" pos="0 0.0025 0" size="0.0175 0.0025 0.0175"/>
+        <geom class="collision" type="box" pos="0 0.02 0"   size="0.01 0.015 0.01"/>
+        <geom class="collision" type="box" pos="0 0.0375 0" size="0.0175 0.0025 0.0175"/>
+    </body>
+    <body name="org3" pos="-0.23 0.17 0.02" euler="89.55 15 0">
+        <freejoint name="org3_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 0.5 0.2 1"/>
+        <inertial pos="0 0.02 0" mass="0.03" diaginertia="7.828e-06 4.084e-06 7.828e-06"/>
+        <geom class="collision" type="box" pos="0 0.0025 0" size="0.0175 0.0025 0.0175"/>
+        <geom class="collision" type="box" pos="0 0.02 0"   size="0.01 0.015 0.01"/>
+        <geom class="collision" type="box" pos="0 0.0375 0" size="0.0175 0.0025 0.0175"/>
+    </body>
+    <body name="grn1" pos="-0.28 -0.06 0.02" euler="89.55 5 0">
+        <freejoint name="grn1_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <inertial pos="0 0.02 0" mass="0.03" diaginertia="7.828e-06 4.084e-06 7.828e-06"/>
+        <geom class="collision" type="box" pos="0 0.0025 0" size="0.0175 0.0025 0.0175"/>
+        <geom class="collision" type="box" pos="0 0.02 0"   size="0.01 0.015 0.01"/>
+        <geom class="collision" type="box" pos="0 0.0375 0" size="0.0175 0.0025 0.0175"/>
+    </body>
+    <body name="grn2" pos="-0.15 -0.23 0.02" euler="89.55 45 0">
+        <freejoint name="grn2_j"/>
+        <geom class="visual" mesh="BOX" rgba="0.3 1 0.3 1"/>
+        <inertial pos="0 0.02 0" mass="0.03" diaginertia="7.828e-06 4.084e-06 7.828e-06"/>
+        <geom class="collision" type="box" pos="0 0.0025 0" size="0.0175 0.0025 0.0175"/>
+        <geom class="collision" type="box" pos="0 0.02 0"   size="0.01 0.015 0.01"/>
+        <geom class="collision" type="box" pos="0 0.0375 0" size="0.0175 0.0025 0.0175"/>
+    </body>
+    <body name="bge1" pos="-0.15 0.25 0.02" euler="89.55 0 0">
+        <freejoint name="bge1_j"/>
+        <geom class="visual" mesh="BOX" rgba="1 1 0.9 1"/>
+        <inertial pos="0 0.02 0" mass="0.03" diaginertia="7.828e-06 4.084e-06 7.828e-06"/>
+        <geom class="collision" type="box" pos="0 0.0025 0" size="0.0175 0.0025 0.0175"/>
+        <geom class="collision" type="box" pos="0 0.02 0"   size="0.01 0.015 0.01"/>
+        <geom class="collision" type="box" pos="0 0.0375 0" size="0.0175 0.0025 0.0175"/>
+    </body>
+
+    <body name="Base">
+      <inertial pos="-0.00180796643689038 -9.32123850327926E-10 0.0217834923549614" mass="0.154652441056775" fullinertia="0.000200051447856741 0.000211470290363317 0.000326586360435416 3.58057490710195E-12 4.05510040297391E-06 -5.64029621109371E-13"/>
+      <geom class="visual" mesh="Base" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      <geom class="collision" mesh="Base"/>
+      <body name="Link_1" pos="0 0 0.06" quat="-0.70749948 0 0 0.70671387">  <!-- turned 2.80 rad about z so the XML pose is joint1 = 0 (inside its range); heading = 176.5 deg + joint1 -->
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-1.86 1.28" damping="0.53" armature="0.004"/>
+        <inertial pos="-0.0133670182328251 -0.00533994314703083 0.0222493207534355" mass="0.115562892177182" fullinertia="9.7206991615911E-05 6.97430113819081E-05 7.38620525888283E-05 -1.46254860154065E-06 7.77050595622095E-06 1.26193816242406E-05"/>
+        <geom class="visual" mesh="Link_1" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+        <geom class="collision" mesh="Link_1"/>
+        <body name="Link_2" pos="0.002 -0.013838 0.036207" quat="0.49999816 0.5 0.50000184 0.5">
+          <joint name="joint2" type="hinge" axis="0 0 -1" range="-0.50 2.64" damping="0.144" armature="0.002"/>
+          <inertial pos="-0.0463782819340899 0.0595693429985195 0.00217857187271023" mass="0.0813668384357788" fullinertia="0.000123158989019609 7.92255666822168E-05 0.000196643555489529 8.68510577499913E-05 9.46001417158126E-08 -1.21476072699366E-07"/>
+          <geom class="visual" mesh="Link_2" rgba="1 1 1 1"/>
+          <geom class="collision" mesh="Link_2"/>
+          <body name="Link_3" pos="-0.092149 0.11836 0" quat="0.70710548 0 0 0.70710808">
+            <joint name="joint3" type="hinge" axis="0 0 -1" range="-1.60 1.54" damping="0.144" armature="0.002"/>
+            <inertial pos="-0.0546536989055095 0.0373399985968722 -0.0143171654378102" mass="0.178624338655419" fullinertia="7.33036304349545E-05 0.000165305965437308 0.000192274011951363 6.59974898135664E-05 7.58338315356359E-07 -3.96056402958971E-07"/>
+            <geom class="visual" mesh="Link_3" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+            <geom class="collision" mesh="Link_3"/>
+            <body name="Link_4" pos="-0.12756 0.072553 -0.0115" quat="-0.68544346 0.17267383 0.68598973 0.17253725">
+              <!-- <joint name="joint4" type="hinge" axis="0 0 -1" range="-3.14 3.14" damping="0.01"/> -->
+              <inertial pos="-0.00342568622405359 -0.00494327723392554 0.017471007302983" mass="0.0228725183300295" fullinertia="5.27383557057046E-06 4.36615060535347E-06 2.88072392622126E-06 -1.75012360957824E-08 4.3635995818527E-07 -1.63045464414607E-08"/>
+              <geom class="visual" mesh="Link_4" rgba="1 1 1 1"/>
+              <geom class="collision" mesh="Link_4"/>
+
+              <body name="Link_5" pos="-0.015105 -0.0046722 0.0231" quat="0.17504 -0.68509864 -0.16179087 0.68834916">
+                <joint name="joint5" type="hinge" axis="-0.010074 0 -0.99995" range="-0.85 2.29" damping="0.0206" armature="0.001"/>
+                <inertial pos="-0.00390446501493337 -0.0289640602130052 -0.0109514496194308" mass="0.0232660655610107" fullinertia="9.41616938240497E-06 4.09482632965586E-06 7.71032605297296E-06 -1.38051050478705E-06 -3.97971229181428E-07 -1.79661637821684E-06"/>
+                <geom class="visual" mesh="Link_5" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+                <geom class="collision" mesh="Link_5"/>
+
+                <site name="endeff" pos="-0.015 -.085 -0.005" size="0.01" rgba="1 0 0 1"/>
+
+                <body name="Gear_R" pos="-0.0241 -0.037883 0.0082444" quat="0.0017029896 0.71066531 -0.0016858819 0.70352618">
+                  <joint name="gear_R" type="hinge" axis="0 0 -1" range="-1.57 1.57" damping="0.0206" armature="0.001"/>
+                  <inertial pos="0.0104528699564177 0.0111732226853275 0.00738679982552146" mass="0.00929528767548075" fullinertia="2.01189842657614E-06 8.78355963502068E-07 2.77600719202135E-06 2.58889819518325E-07 -1.59922163893918E-14 -1.33205030811016E-14"/>
+                  <geom class="visual" mesh="Gear_R" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+                  <geom class="collision" mesh="Gear_R"/>
+                </body>
+
+                <body name="Gear_L" pos="-0.024369 -0.037883 -0.022" quat="0.0017029896 0.71066531 -0.0016858819 0.70352618">
+                  <joint name="gear_L" type="hinge" axis="0 0 -1" range="-1.57 1.57" damping="0.01"/>
+                  <inertial pos="-0.00986503687712348 0.0127560465178656 0.00738680068352841" mass="0.00929528951522986" fullinertia="1.99571065583977E-06 8.9454405225568E-07 2.77600750631329E-06 -2.5009142548444E-07 -1.53275498176611E-14 1.3451494828015E-14"/>
+                  <geom class="visual" mesh="Gear_L" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+                  <geom class="collision" mesh="Gear_L"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Parent/child pairs are already ignored; these stop the gripper parts from fighting each other -->
+  <contact>
+    <exclude body1="Link_5" body2="Gear_R"/>
+    <exclude body1="Link_5" body2="Gear_L"/>
+    <exclude body1="Gear_R" body2="Gear_L"/>
+    <exclude body1="Link_4" body2="Link_5"/>
+    <exclude body1="Link_4" body2="Gear_R"/>
+    <exclude body1="Link_4" body2="Gear_L"/>
+  </contact>
+
+  <!-- ONE MG90S drives the claw: gear_L is slaved to gear_R (mirror), so there is a single claw actuator -->
+  <equality>
+    <joint joint1="gear_R" joint2="gear_L" polycoef="0 -1 0 0 0"/>
+  </equality>
+
+  <!-- SERVO MODEL (each joint = one hobby servo, 6 V assumed)
+       range / ctrlrange : 180 deg of travel (pi rad). servo_angle_deg = (q - lo) * 180/pi  (flip sign in firmware if mounted the other way)
+       forcerange        : datasheet stall torque (kgf.cm x 0.0980665 = N.m). A servo should hold well under ~50% of this.
+       kp                : full stall torque at ~0.05 rad (3 deg) of position error, like a P-only servo loop
+       kv                : extra damping so the loop is ~critically damped (also keeps the explicit integrator stable)
+       joint damping     : stall torque / no-load speed -> torque falls linearly with speed like a real servo
+       joint armature    : reflected rotor inertia through the gearbox (rough estimate)
+       joint1 TD-8120MG  2.01 N.m (20.5 kgf.cm), 3.77 rad/s    joint2,joint3 MG996R 1.079 N.m (11 kgf.cm), 7.48 rad/s (0.14 s/60deg)
+       joint5, claw      MG90S   0.216 N.m (2.2 kgf.cm), 10.5 rad/s (0.1 s/60deg) -->
+  <actuator>
+    <position name="joint1_act" joint="joint1" kp="40"   kv="0.5" ctrlrange="-1.86 1.28" forcerange="-2.01 2.01"/>
+    <position name="joint2_act" joint="joint2" kp="21.6" kv="0.6" ctrlrange="-0.50 2.64" forcerange="-1.08 1.08"/>
+    <position name="joint3_act" joint="joint3" kp="21.6" kv="0.5" ctrlrange="-1.60 1.54" forcerange="-1.08 1.08"/>
+    <!-- <position name="joint4_act" joint="joint4" kp="5" kv="0.2" ctrlrange="-3.14 3.14" forcerange="-0.17 0.17"/> -->
+    <position name="joint5_act" joint="joint5" kp="4.3"  kv="0.1" ctrlrange="-0.85 2.29" forcerange="-0.216 0.216"/>
+    <position name="claw_act"   joint="gear_R" kp="4.3"  kv="0.1" ctrlrange="-1.57 1.57" forcerange="-0.216 0.216"/>
+  </actuator>
+
+  <sensor>
+    <framepos objtype="site" objname="endeff"/>
+    <framelinvel objtype="site" objname="endeff"/>
+  </sensor>
+</mujoco>

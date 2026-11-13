@@ -7,11 +7,14 @@ import numpy as np
 
 from simfiles import sim_state as S
 from simfiles import callbacks as cb
+from simfiles import claw
 from simfiles.controls import play_pose, pose_list
 from simfiles.poses import initialize_poses
 from simfiles.task import run_cycle
 
-MODEL_PATH = "/home/kalelgms/Desktop/Projects/final_project/gatonomous/models/ARM.xml"
+#MODEL_PATH = "/home/kalelgms/Desktop/Projects/final_project/gatonomous/models/ARM.xml"
+MODEL_PATH = "/home/kalelgms/Desktop/Projects/final_project/gatonomous/models/ACCURATE_ARM.xml"
+#ACCURATE_ARM.xml udh diedit sesuai ama torque n stuff servo asli
 
 def main():
     model_path = sys.argv[1] if len(sys.argv) > 1 else MODEL_PATH
@@ -23,6 +26,15 @@ def main():
         return 1
     S.d = mujoco.MjData(S.m)
     initialize_poses()
+    play_pose(pose_list[0])
+
+    for i in range(S.m.nu):
+        lo, hi = S.m.actuator_ctrlrange[i]
+        S.d.ctrl[i] = np.clip(S.d.ctrl[i], lo, hi)
+        S.d.qpos[S.m.jnt_qposadr[S.m.actuator_trnid[i, 0]]] = S.d.ctrl[i]
+    S.d.qpos[S.m.joint("gear_L").qposadr[0]] = -S.d.qpos[S.m.joint("gear_R").qposadr[0]]
+    mujoco.mj_forward(S.m, S.d)
+    #claw.calibrate()
 
     # error
     glfw.set_error_callback(cb.glfw_error_callback)
@@ -31,7 +43,7 @@ def main():
         return 1
 
     # window
-    window = glfw.create_window(900, 1200, "arm sim", None, None)
+    window = glfw.create_window(1200, 1200, "ARM SIM", None, None)
     if not window:
         print("glfwCreateWindow() gagal", file=sys.stderr)
         glfw.terminate()
@@ -60,8 +72,7 @@ def main():
 
     tip_id = mujoco.mj_name2id(S.m, mujoco.mjtObj.mjOBJ_SITE, "endeff")
     task = None
-    SUBSTEPS = 4
-    play_pose(pose_list[0])
+    SUBSTEPS = 6
 
     # sim loop, scan, detect, move, till all pyramid items are placed
     while not glfw.window_should_close(window):
@@ -73,10 +84,10 @@ def main():
             mujoco.mj_step(S.m, S.d)
 
         # IK: only leave InverseK once the tip has reached the target and settled
-        if S.STATE == S.BotState.INVERSE_K:
-            dist = np.linalg.norm(S.d.site_xpos[tip_id] - S.CURRENTTARGET)
-            if dist < 0.01 and np.linalg.norm(S.d.qvel) < 0.05:
-                S.set_bot_state(S.BotState.TELEOP, "Reached Target!!")###
+        # if S.STATE == S.BotState.INVERSE_K:
+        #     dist = np.linalg.norm(S.d.site_xpos[tip_id] - S.CURRENTTARGET)
+        #     if dist < 0.01 and np.linalg.norm(S.d.qvel) < 0.05:
+        #         S.set_bot_state(S.BotState.TELEOP, "Reached Target!!")###
 
         ##
         if S.AUTO:
