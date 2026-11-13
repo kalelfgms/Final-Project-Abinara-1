@@ -12,22 +12,46 @@ cam = None  # MjvCamera
 opt = None  # MjvOption
 con = None  # MjrContext
 
-# IK target
-target_pos = np.array([0.2, 0.2, 0.2])
+# target positions
+CURRENTTARGET = np.array([0.2, 0.2, 0.2])
 
+AUTO = False                  # ENTER toggles the automatic sequence
+MANUAL_TASK = None            # generator for a manually triggered motion sequence
+SLOT_INDEX = 0                # next slot to fill
+SKIPPED = []                  # boxes the arm couldn't reach
+BASE_XY = np.array([0.0, 0.0])   # world xy of the yaw axis; change if the base isn't at the origin
+BOXES = [                     # sim stand-in for the camera; EDIT to positions your arm can reach
+    dict(color="orange", pos=[-0.2, -0.12, 0.02]),
+    dict(color="orange", pos=[-0.25, 0.05, 0.02]),
+    dict(color="orange", pos=[-0.23, 0.17, 0.02]),
+    dict(color="green",  pos=[-0.28, -0.06, 0.02]),
+    dict(color="green",  pos=[-0.15, -0.23, 0.02]),
+    dict(color="beige",  pos=[-0.15, 0.25, 0.02]),
+]
+SLOTS = [  # build order
+    dict(color="orange", pos=[-0.04, 0.3, 0.01]),
+    dict(color="orange", pos=[-0.0,  0.3, 0.01]),
+    dict(color="orange", pos=[0.04,  0.3, 0.01]),
+    dict(color="green",  pos=[-0.02, 0.3, 0.09]),
+    dict(color="green",  pos=[0.02,  0.3, 0.09]),
+    dict(color="beige",  pos=[0.0,   0.3, 0.12]),
+]
 
 class BotState(Enum):
+    START = "Starting"
+    SCANNING = "Scanning"
+    GRABBING = "Grabbing" # Grab sequence
+    PLACING = "Placing" # Place sequence
+    FINISHED = "Finished"
+    FAILED = "Failed"
+    INVERSE_K = "IK"
     TELEOP = "Teleop"
     POSED = "Posed"
-    ANIMATED = "Animated"
-    INVERSE_K = "InverseK"
-
-
-STATE = BotState.TELEOP
-STATENAME = "-"
 
 
 def set_bot_state(st: BotState, name: str):
     global STATE, STATENAME
     STATE = st
     STATENAME = name
+
+set_bot_state(BotState.START, BotState.START.name)

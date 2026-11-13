@@ -6,6 +6,7 @@ import numpy as np
 from simfiles import sim_state as S
 from simfiles.controls import move_joint, play_pose, pose_list
 from simfiles.ik import solve_ik
+from simfiles import claw as claw
 
 # key currently held
 current_key = 0
@@ -31,7 +32,32 @@ def keyboard_callback(window, key, scancode, act, mods):
         if key == p.get_key():
             play_pose(p)
 
-    if key == glfw.KEY_T:  # trigger IK to the target position
+    if key == glfw.KEY_ENTER:     # start / stop the automatic sequence
+        S.AUTO = not S.AUTO
+        print("auto:", S.AUTO)
+        return
+    S.AUTO = False   
+
+    if key == glfw.KEY_1: # open claw
+        claw.open()
+    elif key == glfw.KEY_2: # close claw
+        claw.close()
+    elif key == glfw.KEY_3: # IK behind target then move forward
+        backup = S.d.ctrl.copy()
+        actual_target = S.d.mocap_pos[0].copy()
+        direction = actual_target[:2] - S.BASE_XY
+        distance = np.linalg.norm(direction)
+
+        ik_target = actual_target.copy()
+        if distance > 1e-8:
+            ik_target[:2] -= direction / distance * 0.06
+
+        if solve_ik(S.m, S.d, "endeff", ik_target, pitch=0.0, locked={5: 0.0}):
+            S.set_bot_state(S.BotState.INVERSE_K, "Reaching Target...")
+        else:
+            S.d.ctrl[:] = backup
+            print("Unreachable")
+    elif key == glfw.KEY_4:  # trigger IK to the target position
         backup = S.d.ctrl.copy()
         target = S.d.mocap_pos[0].copy()   # the green sphere in your XML
         if solve_ik(S.m, S.d, "endeff", target, pitch=0.0, locked={5: 0.0}):
@@ -39,7 +65,6 @@ def keyboard_callback(window, key, scancode, act, mods):
         else:
             S.d.ctrl[:] = backup
             print("Unreachable")
-
 
 def key_held_update():
     binding = KEY_BINDINGS.get(current_key)

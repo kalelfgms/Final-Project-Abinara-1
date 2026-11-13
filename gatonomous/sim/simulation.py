@@ -9,9 +9,9 @@ from simfiles import sim_state as S
 from simfiles import callbacks as cb
 from simfiles.controls import play_pose, pose_list
 from simfiles.poses import initialize_poses
+from simfiles.task import run_cycle
 
 MODEL_PATH = "/home/kalelgms/Desktop/Projects/final_project/gatonomous/models/ARM.xml"
-
 
 def main():
     model_path = sys.argv[1] if len(sys.argv) > 1 else MODEL_PATH
@@ -22,6 +22,7 @@ def main():
         print(f"Couldn't load model: {e}", file=sys.stderr)
         return 1
     S.d = mujoco.MjData(S.m)
+    initialize_poses()
 
     # error
     glfw.set_error_callback(cb.glfw_error_callback)
@@ -57,27 +58,44 @@ def main():
     S.cam.azimuth = 45
     S.cam.elevation = -25
 
-    # create poses
-    initialize_poses()
-
-    # starting pose
-    play_pose(pose_list[0])  # index 0 = start pos
-
     tip_id = mujoco.mj_name2id(S.m, mujoco.mjtObj.mjOBJ_SITE, "endeff")
+    task = None
+    SUBSTEPS = 4
+    play_pose(pose_list[0])
 
-    # sim loop
+    # sim loop, scan, detect, move, till all pyramid items are placed
     while not glfw.window_should_close(window):
         if cb.is_key_held():  # detect key holding
             cb.key_held_update()
 
-        S.d.qfrc_applied[:] = S.d.qfrc_bias
-        mujoco.mj_step(S.m, S.d)
+        S.d.qfrc_applied[:] = 0.0 # S.d.qfrc_bias
+        for _ in range(SUBSTEPS):
+            mujoco.mj_step(S.m, S.d)
 
         # IK: only leave InverseK once the tip has reached the target and settled
         if S.STATE == S.BotState.INVERSE_K:
-            dist = np.linalg.norm(S.d.site_xpos[tip_id] - S.target_pos)
+            dist = np.linalg.norm(S.d.site_xpos[tip_id] - S.CURRENTTARGET)
             if dist < 0.01 and np.linalg.norm(S.d.qvel) < 0.05:
-                S.set_bot_state(S.BotState.TELEOP, "Reached Target!!")
+                S.set_bot_state(S.BotState.TELEOP, "Reached Target!!")###
+
+        ##
+        if S.AUTO:
+            S.MANUAL_TASK = None
+            if task is None:
+                task = run_cycle()
+            try:
+                next(task)
+            except StopIteration:
+                task = None
+                S.AUTO = False
+        else:
+            task = None
+            if S.MANUAL_TASK is not None:
+                try:
+                    next(S.MANUAL_TASK)
+                except StopIteration:
+                    S.MANUAL_TASK = None
+        ##
 
         w, h = glfw.get_framebuffer_size(window)
         viewport = mujoco.MjrRect(0, 0, w, h)
