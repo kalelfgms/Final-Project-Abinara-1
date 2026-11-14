@@ -10,11 +10,11 @@ from simfiles.controls import play_pose, pose_list
 WRIST = 3
 ARM_ACTS = [0, 1, 2, 3]
 
-APPROACH = 0.06     # how far behind the target the claw stops before going in (m)
-LIFT = 0.08         # how high to lift a box before carrying it (m)
-SPEED = 1        # tip speed along a path (m/s of SIM time)
+APPROACH = 0.085     # how far behind the target the claw stops before going in (m)
+LIFT = 0.11         # how high to lift a box before carrying it (m)
+SPEED = 0.75        # tip speed along a path (m/s of SIM time)
 TOL = 0.015         # "arrived" tolerance (m)
-MIN_TIP_Z = 0.03    # the claw tip is never commanded lower than this (m); raise it if the fingers still scrape
+MIN_TIP_Z = 0.035    # the claw tip is never commanded lower than this (m); raise it if the fingers still scrape
 
 PITCH_CANDIDATES = [0.0, -0.15, -0.3, -0.45, -0.6]   # claw elevation (rad); first one the joint limits allow is used
 _pitch = 0.0        # claw elevation currently commanded
@@ -265,3 +265,5 @@ def run_cycle():
 
         S.SLOT_INDEX += 1
         yield
+    play_pose(pose_list[0])
+    print("SEQUENCE DONE")

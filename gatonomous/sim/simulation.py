@@ -43,7 +43,7 @@ def main():
         return 1
 
     # window
-    window = glfw.create_window(1200, 1200, "ARM SIM", None, None)
+    window = glfw.create_window(1500, 1500, "ARM SIM", None, None)
     if not window:
         print("glfwCreateWindow() gagal", file=sys.stderr)
         glfw.terminate()
@@ -72,7 +72,7 @@ def main():
 
     tip_id = mujoco.mj_name2id(S.m, mujoco.mjtObj.mjOBJ_SITE, "endeff")
     task = None
-    SUBSTEPS = 6
+    SUBSTEPS = 10
 
     # sim loop, scan, detect, move, till all pyramid items are placed
     while not glfw.window_should_close(window):
@@ -82,12 +82,6 @@ def main():
         S.d.qfrc_applied[:] = 0.0 # S.d.qfrc_bias
         for _ in range(SUBSTEPS):
             mujoco.mj_step(S.m, S.d)
-
-        # IK: only leave InverseK once the tip has reached the target and settled
-        # if S.STATE == S.BotState.INVERSE_K:
-        #     dist = np.linalg.norm(S.d.site_xpos[tip_id] - S.CURRENTTARGET)
-        #     if dist < 0.01 and np.linalg.norm(S.d.qvel) < 0.05:
-        #         S.set_bot_state(S.BotState.TELEOP, "Reached Target!!")###
 
         ##
         if S.AUTO:

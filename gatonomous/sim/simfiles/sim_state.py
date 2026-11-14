@@ -22,19 +22,20 @@ SKIPPED = []                  # boxes the arm couldn't reach
 BASE_XY = np.array([0.0, 0.0])   # world xy of the yaw axis; change if the base isn't at the origin
 BOXES = [                     # sim stand-in for the camera; EDIT to positions your arm can reach
     dict(color="orange", pos=[-0.2, -0.12, 0.02]),
-    dict(color="orange", pos=[-0.25, 0.05, 0.02]),
+    dict(color="orange", pos=[-0.3, 0.05, 0.02]),
     dict(color="orange", pos=[-0.23, 0.17, 0.02]),
     dict(color="green",  pos=[-0.28, -0.06, 0.02]),
     dict(color="green",  pos=[-0.15, -0.23, 0.02]),
     dict(color="beige",  pos=[-0.15, 0.25, 0.02]),
 ]
+# make randomization (?) hrs spawn xml boxesnya
 SLOTS = [  # build order
-    dict(color="orange", pos=[-0.04, 0.3, 0.01]),
-    dict(color="orange", pos=[-0.0,  0.3, 0.01]),
-    dict(color="orange", pos=[0.04,  0.3, 0.01]),
-    dict(color="green",  pos=[-0.02, 0.3, 0.09]),
-    dict(color="green",  pos=[0.02,  0.3, 0.09]),
-    dict(color="beige",  pos=[0.0,   0.3, 0.12]),
+    dict(color="orange", pos=[-0.0525, 0.3, 0.02]),
+    dict(color="orange", pos=[-0.0,  0.3, 0.02]),
+    dict(color="orange", pos=[0.0525,  0.3, 0.02]),
+    dict(color="green",  pos=[-0.032, 0.3, 0.105]),
+    dict(color="green",  pos=[0.028,  0.3, 0.105]),
+    dict(color="beige",  pos=[0.0,   0.29, 0.15]),
 ]
 
 class BotState(Enum):

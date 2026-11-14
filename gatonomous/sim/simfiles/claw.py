@@ -3,9 +3,9 @@ import numpy as np
 
 from simfiles import sim_state as S
 
-OPEN_R, OPEN_L = 0.1, -0.4
+OPEN_R, OPEN_L = -0.0875, -0.4
 # fallback values; calibrate() replaces the closed ones with the angle where the fingers just touch
-CLOSE_R, CLOSE_L = -0.3, 0.3
+CLOSE_R, CLOSE_L = -0.275, 0.3
 
 def open():
     S.d.ctrl[4] = OPEN_R
